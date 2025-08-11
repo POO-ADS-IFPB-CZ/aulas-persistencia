@@ -1,12 +1,14 @@
 package view;
 
 import dao.GenericDao;
+import exceptions.AlunoExisteException;
+import exceptions.MatriculaInvalidaException;
+import exceptions.NomeInvalidoException;
 import model.Aluno;
+import service.AlunoService;
 
 import javax.swing.*;
 import javax.swing.text.MaskFormatter;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.text.ParseException;
 
@@ -18,9 +20,18 @@ public class TelaPrincipal extends JFrame {
     private JComboBox comboCurso;
     private JFormattedTextField campoMatricula;
     private JButton listarButton;
+    //Remover o genericDao após refatorar tudo
     private GenericDao<Aluno> alunoDao;
+    private AlunoService alunoService;
 
     public TelaPrincipal() {
+
+        try {
+            alunoService = new AlunoService();
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(null,
+                    "Falha ao conectar com arquivo");
+        }
 
         try {
             alunoDao = new GenericDao<>("alunos.txt");
@@ -47,7 +58,7 @@ public class TelaPrincipal extends JFrame {
                 String curso = (String) comboCurso.getSelectedItem();
                 Aluno aluno = new Aluno(matricula, nome, curso);
                 try {
-                    if(alunoDao.salvar(aluno)){
+                    if(alunoService.salvar(aluno)){
                         JOptionPane.showMessageDialog(
                                 null,
                                 "Aluno salvo com sucesso!");
@@ -62,6 +73,15 @@ public class TelaPrincipal extends JFrame {
                             "Falha ao manipular arquivo",
                             "Mensagem de erro",
                             JOptionPane.ERROR_MESSAGE);
+                } catch (NomeInvalidoException ex) {
+                    JOptionPane.showMessageDialog(null,
+                            ex.getMessage());
+                } catch (AlunoExisteException ex) {
+                    JOptionPane.showMessageDialog(null,
+                            ex.getMessage());
+                } catch (MatriculaInvalidaException ex) {
+                    JOptionPane.showMessageDialog(null,
+                            ex.getMessage());
                 }
             }
         });
@@ -83,13 +103,6 @@ public class TelaPrincipal extends JFrame {
         if(campoNome.getText().equals("")){
             JOptionPane.showMessageDialog(null,
                     "Informe o seu nome",
-                    "Mensagem de erro",
-                    JOptionPane.ERROR_MESSAGE);
-            return false;
-        }
-        if(campoNome.getText().indexOf(" ")==-1){
-            JOptionPane.showMessageDialog(null,
-                    "Digite nome e sobrenome",
                     "Mensagem de erro",
                     JOptionPane.ERROR_MESSAGE);
             return false;

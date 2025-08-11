@@ -17,7 +17,7 @@ public class AlunoService {
         alunoDao = new GenericDao<>("alunos.txt");
     }
 
-    boolean salvar(Aluno aluno) throws IOException,
+    public boolean salvar(Aluno aluno) throws IOException,
             ClassNotFoundException, AlunoExisteException,
             NomeInvalidoException, MatriculaInvalidaException {
         Set<Aluno> alunos = alunoDao.getAll();
