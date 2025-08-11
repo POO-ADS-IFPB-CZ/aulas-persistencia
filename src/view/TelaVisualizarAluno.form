@@ -66,7 +66,12 @@
             <children>
               <component id="26bab" class="javax.swing.JTable" binding="table1" custom-create="true" default-binding="true">
                 <constraints/>
-                <properties/>
+                <properties>
+                  <background color="-1"/>
+                  <font name="JetBrains Mono" size="14" style="0"/>
+                  <gridColor color="-1036009"/>
+                  <selectionBackground color="-1835157"/>
+                </properties>
               </component>
             </children>
           </scrollpane>
